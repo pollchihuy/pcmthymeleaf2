@@ -2,6 +2,7 @@ package com.juaracoding.controller;
 
 
 import cn.apiclub.captcha.Captcha;
+import com.juaracoding.config.OtherConfig;
 import com.juaracoding.dto.validation.ValLoginDTO;
 import com.juaracoding.httpservice.AuthService;
 import com.juaracoding.security.BcryptImpl;
@@ -40,7 +41,15 @@ public class AuthController {
         System.out.println("Password setelah di decode : "+decodePassword);
         valLoginDTO.setPassword(decodePassword);
         String strAnswer = valLoginDTO.getHiddenCaptcha();
-        if(!BcryptImpl.verifyHash(valLoginDTO.getCaptcha(),strAnswer) || result.hasErrors()){
+        Boolean isValid = false;
+        if(OtherConfig.getEnableAutomationTesting().equals("y")){
+            // kalau mode automation testing
+            isValid = valLoginDTO.getCaptcha().equals(strAnswer);
+        }else {
+            // kalau mode production
+            isValid = BcryptImpl.verifyHash(valLoginDTO.getCaptcha(),strAnswer);
+        }
+        if(!isValid || result.hasErrors()){
             GlobalFunction.getCaptchaLogin(valLoginDTO);
             model.addAttribute("x",valLoginDTO);
             model.addAttribute("captchaMessage","Invalid Captcha");
@@ -56,7 +65,7 @@ public class AuthController {
             System.out.println("Body Response : "+response.getBody());
             tokenJwt = (String) map.get("token");
             List<Map<String,Object>> ltMenu = (List<Map<String, Object>>) map.get("menu");
-            
+
             System.out.println("Token JWT : "+tokenJwt);
         }catch (Exception e){
 

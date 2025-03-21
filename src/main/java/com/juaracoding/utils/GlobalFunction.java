@@ -4,6 +4,11 @@ import cn.apiclub.captcha.Captcha;
 import com.juaracoding.config.OtherConfig;
 import com.juaracoding.dto.validation.ValLoginDTO;
 import com.juaracoding.security.BcryptImpl;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GlobalFunction {
 
@@ -18,5 +23,15 @@ public class GlobalFunction {
         }
         valLoginDTO.setCaptcha("");
         valLoginDTO.setRealCaptcha(CaptchaUtils.encodeCaptcha(captcha));
+    }
+
+    public static void matchingPattern(String value,String regex, 
+                                       String field,String message,
+                                       String modelAttribut,
+                                       BindingResult result){
+        Boolean isValid = Pattern.compile(regex).matcher(value).find();
+        if(!isValid){
+            result.rejectValue(field,"error."+modelAttribut,message);
+        }
     }
 }

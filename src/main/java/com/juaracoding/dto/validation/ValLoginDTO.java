@@ -1,31 +1,43 @@
 package com.juaracoding.dto.validation;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-import java.io.Serializable;
+public class ValLoginDTO {
 
-public class ValLoginDTO  {
-
-//    @Pattern(regexp = "^[[a-z0-9\\.]]$",message = "Isi dengan benar!!")
-    @NotNull
+    @Pattern(message = "Isi Username dengan benar!!",
+            regexp = "^[a-z0-9\\.]{8,16}$")
     private String username;
 
-//    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@_#\\-$])[\\w].{8,15}$",
-//            message = "Isi Dengan Benar !!")
-    @NotNull
+    @NotEmpty(message = "Tidak Boleh Kosong !!")
     private String password;
 
+    @Pattern(message = "Isi Captcha Dengan Benar !!",
+            regexp = "^[\\w]{5}$")
     private String captcha;
     private String hiddenCaptcha;
     private String realCaptcha;
+
+//    @NotEmpty
+//    private String sesId;
+//
+//    public String getSesId() {
+//        return sesId;
+//    }
+//
+//    public void setSesId(String sesId) {
+//        this.sesId = sesId;
+//    }
 
     public String getCaptcha() {
         return captcha;
     }
 
+    public void resetValue() {
+        this.captcha = "";
+        this.password = "";
+        this.username = "";
+    }
     public void setCaptcha(String captcha) {
         this.captcha = captcha;
     }

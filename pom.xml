@@ -20,6 +20,8 @@
         <webjars-locator.version>0.52</webjars-locator.version>
         <jquery.version>3.7.1</jquery.version>
         <popper.version>2.11.7</popper.version>
+        <h2.version>2.3.232</h2.version>
+        <model-mapper.version>3.2.2</model-mapper.version>
 
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -27,6 +29,17 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>1.79</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${model-mapper.version}</version> <!-- Versi terbaru -->
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->
         <dependency>
             <groupId>org.mindrot</groupId>
@@ -34,11 +47,11 @@
             <version>0.4</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-<!--            <version>${project.parent.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
 
 <!--        web jar-->
         <dependency>
@@ -67,12 +80,13 @@
         </dependency>
 
 
-<!--        <dependency>-->
-<!--            <groupId>com.h2database</groupId>-->
-<!--            <artifactId>h2</artifactId>-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
 <!--            <version>2.2.224</version>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
+            <version>${h2.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.session</groupId>

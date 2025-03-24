@@ -2,8 +2,17 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>GROUP</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
 <body>
 <div th:replace="~{fragment/navbar::navheader}"></div>
+<div th:replace="~{fragment/filter::filter-form}"></div>
+<div th:replace="~{fragment/report-button::btn-functional}"></div>
+<div th:replace="~{fragment/table::main-table}"></div>
+<div th:replace="~{fragment/pagination::paging}"></div>
+<!---->
+<th:block th:replace="~{fragment/modals-add::modalsAdd('add1')}">modalAdd</th:block>
+<th:block th:replace="~{fragment/modals-edit::modalzEdit('edit1')}">modalEdit</th:block>
+
 </body>
 </html>

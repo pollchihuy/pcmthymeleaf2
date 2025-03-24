@@ -4,8 +4,10 @@ import cn.apiclub.captcha.Captcha;
 import com.juaracoding.config.OtherConfig;
 import com.juaracoding.dto.validation.ValLoginDTO;
 import com.juaracoding.security.BcryptImpl;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,5 +35,11 @@ public class GlobalFunction {
         if(!isValid){
             result.rejectValue(field,"error."+modelAttribut,message);
         }
+    }
+
+    public static void setGlobalFragment(Model model, WebRequest request){
+        model.addAttribute("USR_NAME",request.getAttribute("USR_NAME",1));
+        model.addAttribute("MENU_NAVBAR",request.getAttribute("MENU_NAVBAR",1));
+        model.addAttribute("MENU_NAVBAR",ConstantValue.SIZE_COMPONENT);
     }
 }

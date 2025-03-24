@@ -107,6 +107,6 @@ public class AuthController {
     @GetMapping("/logout")
     public String destroySession(HttpServletRequest request){
         request.getSession().invalidate();
-        return "redirect"+ConstantPage.DEFAULT_PAGE;
+        return "redirect:"+ConstantPage.DEFAULT_PAGE;
     }
 }

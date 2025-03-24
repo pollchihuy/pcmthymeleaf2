@@ -1,20 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <nav th:fragment="navheader">
     <ul>
         <li><a th:href="@{/home}" >Home</a></li>
         <th:block th:if="${USR_NAME != null}" th:utext="${MENU_NAVBAR}"></th:block>
         <li><a th:if="${USR_NAME != null}" th:href="@{/auth/logout}" >Logout</a></li>
-        <li><a th:unless="${USR_NAME == null}" th:href="@{/}" >Login</a></li>
-
-<!--        <li><a th:href="@{/group}" >Group</a></li>-->
-<!--        <li><a th:href="@{/akses}" >Akses</a></li>-->
-<!--        <li><a th:href="@{/user}" >User</a></li>-->
-<!--        <li><a th:href="@{/menu}" >Menu</a></li>-->
-
+        <li><a th:if="${USR_NAME == null}" th:href="@{/}" >Login</a></li>
+        <li><a th:href="@{/contact-us}" >Contact Us</a></li>
+        <li><a th:href="@{/contact-us}" >Wajib</a></li>
     </ul>
 </nav>
-
-</body>
-</html>

@@ -10,6 +10,9 @@
 <body>
 
 <div class="wrapper">
+    <div th:if="${authProblem != null}" class="error-box error-danger" >
+        <p style="text-align: center;color: green;font-weight: bolder;font-size: 2.5rem" th:utext="${authProblem}" />
+    </div>
     <div class="logo">
         <img th:src="@{${logo}}" alt="">
     </div>
@@ -17,6 +20,8 @@
         Twitter
     </div>
     <form id="form-login" class="p-3 mt-3" method="post" th:object="${x}" th:action="@{/auth/login}">
+
+
         <div class="form-field d-flex align-items-center">
             <span class="far fa-user"></span>
             <input type="text" id="username" th:field="*{username}" placeholder="Username">

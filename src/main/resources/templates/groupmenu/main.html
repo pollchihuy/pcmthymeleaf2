@@ -2,7 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>GROUP</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css} "/>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/table.css}" type="text/css">
+    <script type="text/javascript" th:src="@{/js/modals.js}"></script>
+    <script type="text/javascript" th:src="@{/js/action.js}"></script>
 </head>
 <body>
 <div th:replace="~{fragment/navbar::navheader}"></div>
@@ -14,5 +18,8 @@
 <th:block th:replace="~{fragment/modals-add::modalsAdd('add1')}">modalAdd</th:block>
 <th:block th:replace="~{fragment/modals-edit::modalzEdit('edit1')}">modalEdit</th:block>
 
+<script type="text/javascript" th:src="@{/webjars/popper.js/umd/popper.min.js}"></script><!--wajib ada untuk modals-->
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script><!--wajib ada untuk modals-->
 </body>
 </html>

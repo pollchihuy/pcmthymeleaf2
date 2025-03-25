@@ -1,4 +1,3 @@
 function changePageSize(){
     $("#itemSizeForm").submit();
 }
-

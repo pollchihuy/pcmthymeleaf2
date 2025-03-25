@@ -87,8 +87,8 @@ public class AuthController {
             List<Map<String,Object>> ltMenu = (List<Map<String, Object>>) data.get("menu");
             menuNavBar = new GenerateStringMenu().stringMenu(ltMenu);
             tokenJwt = (String) data.get("token");
-            System.out.println("Body Response : "+response.getBody());
-            System.out.println("Token JWT : "+tokenJwt);
+//            System.out.println("Body Response : "+response.getBody());
+//            System.out.println("Token JWT : "+tokenJwt);
 
         }catch (Exception e){
 

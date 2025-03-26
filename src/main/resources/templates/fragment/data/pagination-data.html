@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<div class="container" th:fragment="paging-data">
+    <div class="row">
+        <div class="col-md-12">
+            <div th:if = "${totalPage > 1}">
+                <div class = "row">
+                    <div class = "col-sm-2">
+                        Total Rows: [[${totalData}]]
+                    </div>
+                    <div class = "col-sm-4">
+                        <button th:if="${currentPage > 1}" type="button" th:onclick="callDataMasterPaging('0')">First</button>
+                        <button th:unless="${currentPage > 1}" type="button" disabled="disabled">First</button>
+                        <button th:if="${currentPage > 1}" type="button" th:onclick="callDataMasterPaging([[${currentPage - 1}]])">Prev</button>
+                        <button th:unless="${currentPage > 1}" type="button" disabled="disabled">Prev</button>
+                    </div>
+                    <div class = "col-sm-2">
+                        <div class="btn-group">
+                            <th:block th:each="i: ${#numbers.sequence(1, totalPage)}">
+                                <button class="page-button" style="color:black;border: 2px solid blue" th:if="${currentPage != i}" type="button" th:onclick="callDataMasterPaging([[${i}]])">[[${i}]]</button>
+                                <button class="page-button" style="color:darkgrey;border: 2px solid grey" th:unless="${currentPage != i}" type="button" disabled="disabled">[[${i}]]</button>
+                            </th:block>
+                            <p style="clear:both"></p>
+                        </div>
+                    </div>
+                    <div class = "col-sm-4">
+                        <button th:if="${currentPage < totalPage}" type="button" th:onclick="callDataMasterPaging([[${currentPage + 1}]])">Next</button>
+                        <button th:unless="${currentPage < totalPage}" type="button" disabled="disabled">Next</button>
+                        <button th:if="${currentPage < totalPage}" type="button" th:onclick="callDataMasterPaging([[${totalPage}]])">Last</button>
+                        <button th:unless="${currentPage < totalPage}" type="button" disabled="disabled">Last</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</html>

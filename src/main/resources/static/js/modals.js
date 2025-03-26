@@ -27,6 +27,36 @@ function funcModalsHandler(event)
     })
 }
 
+function funcModalsDataTableHandler(dataTitle,dataTarget,urlz,serverz)
+{
+    $(dataTarget).on('show.bs.modal',function(){
+
+        $.get(urlz, function (data) {
+            try{
+                $(serverz).html(data);
+            }catch(r)
+            {
+                console.log('error '+r)
+            }finally
+            {
+                $(dataTarget).find('#data-title').text(dataTitle)
+            }
+        });
+    })
+}
+
+function funcModalsDataMasterHandler(idComp,descComp,idVal,descVal)
+{
+    // console.log(idComp+'--'+descComp+'--'+idVal+'--'+descVal+'--')
+    $(idComp).val(idVal);
+    $(descComp).val(descVal);
+    $('#dataTable').modal('hide');
+}
+
+$('#sizeChange').on("change", function (){
+    callDataMaster();
+});
+
 function getRequestHandler(event)
 {
     event.preventDefault();

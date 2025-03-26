@@ -1,14 +1,14 @@
 package com.juaracoding.httpservice;
 
 
-import com.juaracoding.dto.validation.ValAksesDTO;
+import com.juaracoding.dto.validation.ValMenuDTO;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "akses-services",url = "http://localhost:8083/akses")
-public interface AksesService {
+@FeignClient(name = "menu-services",url = "http://localhost:8083/menu")
+public interface MenuService {
 
     @GetMapping
     public ResponseEntity<Object> findAll(@RequestHeader("Authorization") String token);
@@ -25,7 +25,7 @@ public interface AksesService {
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestHeader("Authorization") String token,
-                                       @RequestBody ValAksesDTO valAksesDTO);
+                                       @RequestBody ValMenuDTO valMenuDTO);
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@RequestHeader("Authorization") String token,
                                            @PathVariable(value = "id") Long id);
@@ -33,7 +33,7 @@ public interface AksesService {
     @PutMapping("/{id}")
     public ResponseEntity<Object> edit(@RequestHeader("Authorization") String token,
                                        @PathVariable(value = "id") Long id,
-                                       @RequestBody ValAksesDTO valAksesDTO);
+                                       @RequestBody ValMenuDTO valMenuDTO);
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@RequestHeader("Authorization") String token,

@@ -48,28 +48,4 @@ public class DefaultController {
         model.addAttribute("MENU_NAVBAR",webRequest.getAttribute("MENU_NAVBAR",1));
         return "auth/regis";
     }
-//    @GetMapping("/group-menu")
-//    public String group(Model model, WebRequest webRequest) {
-//        model.addAttribute("USR_NAME",webRequest.getAttribute("USR_NAME",1));
-//        model.addAttribute("MENU_NAVBAR",webRequest.getAttribute("MENU_NAVBAR",1));
-//        return "groupmenu/main";
-//    }
-    @GetMapping("/akses")
-    public String akses(Model model, WebRequest webRequest) {
-        model.addAttribute("USR_NAME",webRequest.getAttribute("USR_NAME",1));
-        model.addAttribute("MENU_NAVBAR",webRequest.getAttribute("MENU_NAVBAR",1));
-        return "akses/main";
-    }
-    @GetMapping("/menu")
-    public String menu(Model model, WebRequest webRequest) {
-        model.addAttribute("USR_NAME",webRequest.getAttribute("USR_NAME",1));
-        model.addAttribute("MENU_NAVBAR",webRequest.getAttribute("MENU_NAVBAR",1));
-        return "menu/main";
-    }
-    @GetMapping("/user")
-    public String user(Model model, WebRequest webRequest) {
-        model.addAttribute("USR_NAME",webRequest.getAttribute("USR_NAME",1));
-        model.addAttribute("MENU_NAVBAR",webRequest.getAttribute("MENU_NAVBAR",1));
-        return "user/main";
-    }
 }

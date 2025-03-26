@@ -2,9 +2,9 @@ package com.juaracoding.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.juaracoding.dto.response.RespAksesDTO;
-import com.juaracoding.dto.validation.ValAksesDTO;
-import com.juaracoding.httpservice.AksesService;
+import com.juaracoding.dto.response.RespMenuDTO;
+import com.juaracoding.dto.validation.ValMenuDTO;
+import com.juaracoding.httpservice.MenuService;
 import com.juaracoding.utils.ConstantPage;
 import com.juaracoding.utils.GlobalFunction;
 import feign.Response;
@@ -29,17 +29,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("akses")
-public class AksesController {
+@RequestMapping("menu")
+public class MenuController {
 
     @Autowired
-    private AksesService aksesService;
+    private MenuService menuService;
 
     private Map<String,Object> filterColumn = new HashMap<String,Object>();
 
-    public AksesController() {
+    public MenuController() {
         filterColumn.put("nama","Nama");
-        filterColumn.put("deskripsi","Deskripsi");
+        filterColumn.put("path","Path");
+        filterColumn.put("group","Group");
     }
 
     @GetMapping
@@ -52,27 +53,29 @@ public class AksesController {
         }
 
         try{
-            response = aksesService.findAll(jwt);
+            response = menuService.findAll(jwt);
             Map<String,Object> mResponse = (Map<String, Object>) response.getBody();
             GlobalFunction.setDataMainPage(model,webRequest,mResponse,
-                    "akses",filterColumn);
+                    "menu",filterColumn);
 //            System.out.println("Body Response : "+response.getBody());
         }catch (Exception e){
             return "redirect:/er";
         }
-        return ConstantPage.AKSES_MAIN_PAGE;
+        return ConstantPage.MENU_MAIN_PAGE;
     }
+
+
 
     @PostMapping("")
     public String save(
-           @ModelAttribute("data") @Valid ValAksesDTO valAksesDTO,
+           @ModelAttribute("data") @Valid ValMenuDTO valMenuDTO,
            BindingResult bindingResult,
            Model model,
            WebRequest webRequest){
 
         if(bindingResult.hasErrors()){
-            model.addAttribute("data",valAksesDTO);
-            return ConstantPage.AKSES_ADD_PAGE;
+            model.addAttribute("data",valMenuDTO);
+            return ConstantPage.MENU_ADD_PAGE;
         }
 
         ResponseEntity<Object> response = null;
@@ -82,10 +85,10 @@ public class AksesController {
         }
 
         try{
-            response = aksesService.save(jwt,valAksesDTO);
+            response = menuService.save(jwt,valMenuDTO);
         }catch (Exception e){
-            model.addAttribute("data",valAksesDTO);
-            return ConstantPage.AKSES_ADD_PAGE;
+            model.addAttribute("data",valMenuDTO);
+            return ConstantPage.MENU_ADD_PAGE;
         }
         return ConstantPage.SUCCESS_MESSAGE;
     }
@@ -99,8 +102,8 @@ public class AksesController {
         if(jwt.equals(ConstantPage.LOGIN_PAGE)){
             return jwt;
         }
-        model.addAttribute("data",new RespAksesDTO());
-        return ConstantPage.AKSES_ADD_PAGE;
+        model.addAttribute("data",new RespMenuDTO());
+        return ConstantPage.MENU_ADD_PAGE;
     }
 
     @GetMapping("/e/{id}")
@@ -114,26 +117,26 @@ public class AksesController {
             return jwt;
         }
         try{
-            response = aksesService.findById(jwt,id);
+            response = menuService.findById(jwt,id);
         }catch (Exception e){
 
         }
         Map<String,Object> map = (Map<String, Object>) response.getBody();
         Map<String,Object> mapData = (Map<String, Object>) map.get("data");
-        model.addAttribute("data",new ObjectMapper().convertValue(mapData,RespAksesDTO.class));
-        return ConstantPage.AKSES_EDIT_PAGE;
+        model.addAttribute("data",new ObjectMapper().convertValue(mapData,RespMenuDTO.class));
+        return ConstantPage.MENU_EDIT_PAGE;
     }
 
     @PostMapping("/e/{id}")
     public String edit(
-            @ModelAttribute("data") @Valid ValAksesDTO valAksesDTO,
+            @ModelAttribute("data") @Valid ValMenuDTO valMenuDTO,
             BindingResult bindingResult,
             Model model,
             @PathVariable(value = "id") Long id,
             WebRequest webRequest){
         if(bindingResult.hasErrors()){
-            model.addAttribute("data",valAksesDTO);
-            return ConstantPage.AKSES_EDIT_PAGE;
+            model.addAttribute("data",valMenuDTO);
+            return ConstantPage.MENU_EDIT_PAGE;
         }
 
         ResponseEntity<Object> response = null;
@@ -143,10 +146,10 @@ public class AksesController {
         }
 
         try{
-            response = aksesService.edit(jwt,id,valAksesDTO);
+            response = menuService.edit(jwt,id,valMenuDTO);
         }catch (Exception e){
-            model.addAttribute("data",valAksesDTO);
-            return ConstantPage.AKSES_EDIT_PAGE;
+            model.addAttribute("data",valMenuDTO);
+            return ConstantPage.MENU_EDIT_PAGE;
         }
         return ConstantPage.SUCCESS_MESSAGE;
     }
@@ -164,15 +167,15 @@ public class AksesController {
         }
 
         try{
-            response = aksesService.delete(jwt,id);
+            response = menuService.delete(jwt,id);
         }catch (Exception e){
-            return ConstantPage.AKSES_MAIN_PAGE;
+            return ConstantPage.MENU_MAIN_PAGE;
         }
 
-        return "redirect:/akses";
+        return "redirect:/menu";
     }
 
-    // localhost:8093/akses/1
+    // localhost:8093/menu/1
     @GetMapping("/{id}")
     public String findById(
             Model model,
@@ -200,15 +203,15 @@ public class AksesController {
         }
 
         try{
-            response = aksesService.findByParam(jwt,sort,sortBy,page,size,column,value);
+            response = menuService.findByParam(jwt,sort,sortBy,page,size,column,value);
             Map<String,Object> mResponse = (Map<String, Object>) response.getBody();
             GlobalFunction.setDataMainPage(model,webRequest,mResponse,
-                    "akses",filterColumn);
+                    "menu",filterColumn);
 //            System.out.println("Body Response : "+response.getBody());
         }catch (Exception e){
             return "redirect:/er";
         }
-        return ConstantPage.AKSES_MAIN_PAGE;
+        return ConstantPage.MENU_MAIN_PAGE;
     }
 
     @PostMapping("/upload-excel")
@@ -235,7 +238,7 @@ public class AksesController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resource);
         }
         try{
-            response = aksesService.downloadExcel(jwt,column,value);
+            response = menuService.downloadExcel(jwt,column,value);
             fileName = response.headers().get("Content-Disposition").toString();
             System.out.println("Value Content-Disposition Server : "+fileName);
             InputStream inputStream = response.body().asInputStream();
@@ -265,7 +268,7 @@ public class AksesController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resource);
         }
         try{
-            response = aksesService.downloadPdf(jwt,column,value);
+            response = menuService.downloadPdf(jwt,column,value);
             fileName = response.headers().get("Content-Disposition").toString();
             System.out.println("Value Content-Disposition Server : "+fileName);
             InputStream inputStream = response.body().asInputStream();

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+
+<div th:replace="~{fragment/data/filter-data::filter-data-master}"></div>
+<div th:replace="~{fragment/data/table-data::table-master}"></div>
+<div th:replace="~{fragment/data/pagination-data::paging-data}"></div>
+<div th:if="${pesan != null}" class="error-box error-danger" >
+    <p style="text-align: center;color: green;font-weight: bolder;font-size: 2.5rem" th:utext="${pesan}" />
+</div>
+
+<!--<script th:inline="javascript">-->
+<!--    /*<![CDATA[*/-->
+<!--    // function funcModalsDataMasterHandler(event)-->
+<!--    function funcModalsDataMasterHandler(idComp,descComp,idVal,descVal)-->
+<!--    {-->
+<!--        // console.log(idComp+'&#45;&#45;'+descComp+'&#45;&#45;'+idVal+'&#45;&#45;'+descVal+'&#45;&#45;')-->
+<!--        $(idComp).val(idVal);-->
+<!--        $(descComp).val(descVal);-->
+<!--        $('#dataTable').modal('hide');-->
+<!--    }-->
+
+<!--    $('#sizeChange').on("change", function (){-->
+<!--        callDataMaster();-->
+<!--    });-->
+
+
+<!--    /*]]>*/-->
+<!--</script>-->
+
+<!--</html>-->

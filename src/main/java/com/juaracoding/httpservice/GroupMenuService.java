@@ -2,8 +2,7 @@ package com.juaracoding.httpservice;
 
 
 import com.juaracoding.dto.validation.ValGroupMenuDTO;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
+import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,5 +38,19 @@ public interface GroupMenuService {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@RequestHeader("Authorization") String token,
             @PathVariable(value = "id") Long id);
+
+    @GetMapping("/excel")
+    public Response downloadExcel(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value
+            );
+
+    @GetMapping("/pdf")
+    public Response downloadPdf(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value
+    );
 
 }

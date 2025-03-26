@@ -7,10 +7,16 @@ import com.juaracoding.dto.validation.ValGroupMenuDTO;
 import com.juaracoding.httpservice.GroupMenuService;
 import com.juaracoding.utils.ConstantPage;
 import com.juaracoding.utils.GlobalFunction;
+import feign.Response;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +62,37 @@ public class GroupMenuController {
             return "redirect:/er";
         }
         return ConstantPage.GROUP_MENU_MAIN_PAGE;
+    }
+
+    @GetMapping("/{idComp}/{descComp}/{sort}/{sortBy}/{page}")
+    public String dataTable(Model model,
+                            @PathVariable(value = "sort") String sort,
+                            @PathVariable(value = "sortBy") String sortBy,//name
+                            @PathVariable(value = "page") Integer page,
+                            @RequestParam(value = "size") Integer size,
+                            @RequestParam(value = "column") String column,
+                            @RequestParam(value = "value") String value,
+                            @PathVariable(value = "idComp") String idComp,
+                            @PathVariable(value = "descComp") String descComp,
+                            WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        page = page!=0?(page-1):page;
+        if(jwt.equals(ConstantPage.LOGIN_PAGE)){
+            return jwt;
+        }
+
+        try{
+            response = groupMenuService.findByParam(jwt,sort,sortBy,page,size,column,value);
+        }catch (Exception e){
+        }
+
+        Map<String,Object> mResponse = (Map<String, Object>) response.getBody();
+        GlobalFunction.setDataMainPage(model,webRequest,mResponse,
+                "group-menu",filterColumn);
+        model.addAttribute("idComp", idComp);
+        model.addAttribute("descComp",descComp);
+        return ConstantPage.DATA_TABLE_MODALS;
     }
 
     @PostMapping("")
@@ -210,6 +248,7 @@ public class GroupMenuController {
             Model model,
             @RequestParam(value = "file") MultipartFile file,
             WebRequest webRequest){
+
         return null;
     }
 
@@ -218,10 +257,28 @@ public class GroupMenuController {
             Model model,
             @RequestParam(value = "column") String column,
             @RequestParam(value = "value") String value,
-            WebRequest webRequest,
-            HttpServletResponse response
+            WebRequest webRequest
     ){
-        return null;
+        ByteArrayResource resource =null;
+        Response response = null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
+        String fileName = "";
+        if(jwt.equals(ConstantPage.LOGIN_PAGE)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resource);
+        }
+        try{
+            response = groupMenuService.downloadExcel(jwt,column,value);
+            fileName = response.headers().get("Content-Disposition").toString();
+            System.out.println("Value Content-Disposition Server : "+fileName);
+            InputStream inputStream = response.body().asInputStream();
+            resource = new ByteArrayResource(IOUtils.toByteArray(inputStream));
+        }catch (Exception e){
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition",fileName.substring(0,fileName.length()-1));
+
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")).
+                body(resource);
     }
 
     @GetMapping("/pdf")
@@ -229,9 +286,28 @@ public class GroupMenuController {
             Model model,
             @RequestParam(value = "column") String column,
             @RequestParam(value = "value") String value,
-            WebRequest webRequest,
-            HttpServletResponse response
+            WebRequest webRequest
     ){
-        return null;
+
+        ByteArrayResource resource =null;
+        Response response = null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
+        String fileName = "";
+        if(jwt.equals(ConstantPage.LOGIN_PAGE)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resource);
+        }
+        try{
+            response = groupMenuService.downloadPdf(jwt,column,value);
+            fileName = response.headers().get("Content-Disposition").toString();
+            System.out.println("Value Content-Disposition Server : "+fileName);
+            InputStream inputStream = response.body().asInputStream();
+            resource = new ByteArrayResource(IOUtils.toByteArray(inputStream));
+        }catch (Exception e){
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition",fileName.substring(0,fileName.length()-1));
+
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/pdf")).
+                body(resource);
     }
 }

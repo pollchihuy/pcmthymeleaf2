@@ -81,7 +81,6 @@ public class GroupMenuController {
         if(jwt.equals(ConstantPage.LOGIN_PAGE)){
             return jwt;
         }
-
         try{
             response = groupMenuService.findByParam(jwt,sort,sortBy,page,size,column,value);
         }catch (Exception e){

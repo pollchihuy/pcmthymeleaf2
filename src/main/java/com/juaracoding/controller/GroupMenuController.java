@@ -81,12 +81,18 @@ public class GroupMenuController {
         if(jwt.equals(ConstantPage.LOGIN_PAGE)){
             return jwt;
         }
+        Map<String,Object> mResponse = null;
         try{
             response = groupMenuService.findByParam(jwt,sort,sortBy,page,size,column,value);
+            mResponse = (Map<String, Object>) response.getBody();
         }catch (Exception e){
+            GlobalFunction.setDataMainPage(model,webRequest,mResponse,
+                    "group-menu",filterColumn);
+            model.addAttribute("idComp", idComp);
+            model.addAttribute("descComp",descComp);
+            return ConstantPage.DATA_TABLE_MODALS;
         }
 
-        Map<String,Object> mResponse = (Map<String, Object>) response.getBody();
         GlobalFunction.setDataMainPage(model,webRequest,mResponse,
                 "group-menu",filterColumn);
         model.addAttribute("idComp", idComp);

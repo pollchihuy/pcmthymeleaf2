@@ -9,8 +9,8 @@
 <!--                <a class="text-light" th:href="@{'/'+${pathServer}+'/'+${idComp}+'/'+${descComp}+'/'+(${#strings.equals(sort,'asc')} ? 'desc' : 'asc')+'/'+${map.key}+'/'+${currentPage}+'?column='+${columnName}+'&value='+${value}+'&size='+${sizePerPage}}">-->
 <!--                    [[${map.value}]]-->
 <!--                </a>-->
-                <button style="background-color: #003366;color: white;padding: 5px;font-size: 18px;text-align: center" type="button" th:onclick="callDataMasterSorting([[(${#strings.equals(sort,'asc')} ? 'desc' : 'asc')]],[[${map.key}]])">[[${map.value}]]</button>
-
+<!--                <button style="background-color: #003366;color: white;padding: 5px;font-size: 18px;text-align: center" type="button" th:onclick="callDataMasterSorting([[(${#strings.equals(sort,'asc')} ? 'desc' : 'asc')]],[[${map.key}]])">[[${map.value}]]</button>-->
+                <a th:href="'javascript:;'"  th:onclick="callDataMasterSorting([[(${#strings.equals(sort,'asc')} ? 'desc' : 'asc')]],[[${map.key}]])">[[${map.value}]]</a>
             </th>
         </th:block>
         <th>Action</th>

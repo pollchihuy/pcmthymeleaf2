@@ -18,6 +18,4 @@ public class ConstantPage {
     public static final String AKSES_ADD_PAGE = "/akses/add";
     public static final String AKSES_EDIT_PAGE = "/akses/edit";
     public static final String DATA_TABLE_MODALS = "global/data-table-form";
-
-
 }

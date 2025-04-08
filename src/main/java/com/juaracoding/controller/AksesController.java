@@ -80,7 +80,8 @@ public class AksesController {
 
         ValAksesDTO valAksesDTO = convertToValAksesDTO(selectAksesDTO);
         if(bindingResult.hasErrors()){
-            model.addAttribute("data",valAksesDTO);
+            model.addAttribute("data",selectAksesDTO);
+            setDataTempAdd(model,webRequest);
             return ConstantPage.AKSES_ADD_PAGE;
         }
 
@@ -94,6 +95,7 @@ public class AksesController {
             response = aksesService.save(jwt,valAksesDTO);
         }catch (Exception e){
             model.addAttribute("data",selectAksesDTO);
+            setDataTempAdd(model,webRequest);
             return ConstantPage.AKSES_ADD_PAGE;
         }
         return ConstantPage.SUCCESS_MESSAGE;
@@ -132,6 +134,17 @@ public class AksesController {
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
         List<Map<String,Object>> ltMenu = (List<Map<String,Object>>) map.get("data");
+        int ltMenuSize = ltMenu.size();
+        Long[] data1 = new Long[ltMenuSize];
+        String[] data2 = new String[ltMenuSize];
+        int i=0;
+        for (Map<String,Object> map1 : ltMenu) {
+            data1[i] = Long.parseLong(map1.get("id").toString());
+            data2[i] = (String) map1.get("nama");
+            i++;
+        }
+        webRequest.setAttribute("data1",data1,1);
+        webRequest.setAttribute("data2",data2,1);
 
         model.addAttribute("data",new RespAksesDTO());
         model.addAttribute("x",ltMenu);
@@ -155,26 +168,10 @@ public class AksesController {
         }catch (Exception e){
 
         }
-        Map<String,Object> map = (Map<String, Object>) response.getBody();
-        Map<String,Object> mapData = (Map<String, Object>) map.get("data");
-        List<Map<String,Object>> ltMenuAkses = (List<Map<String,Object>>) mapData.get("ltMenu");
-
-        Map<String,Object> mapMenu = (Map<String, Object>) responseMenu.getBody();
-        List<Map<String,Object>> ltMenu = (List<Map<String,Object>>) mapMenu.get("data");
-        List<SelectMenuDTO> listAllMenu = getAllMenu(ltMenu);
-        List<SelectMenuDTO> selectedMenuDTO = new ArrayList<>();
-        for (SelectMenuDTO menu : listAllMenu) {
-            for(Map<String,Object> m:ltMenuAkses){
-                if(menu.getId()==Long.parseLong(m.get("id").toString())){
-                    selectedMenuDTO.add(menu);
-                    break;
-                }
-            }
-        }
-        Set<Long> menuSelected = selectedMenuDTO.stream().map(SelectMenuDTO::getId).collect(Collectors.toSet());
-        model.addAttribute("data",new ObjectMapper().convertValue(mapData,RespAksesDTO.class));
-        model.addAttribute("listMenu",listAllMenu);
-        model.addAttribute("menuSelected",menuSelected);
+        /** cara untuk menyimpan data di session, kurang lebih sama untuk CSR data nya disimpan di dalam storage di web browser
+         *  Notes : table session tidak dapat menyimpan data berbentuk object serialize, sehingga nanti dirangkai menjadi array 1 atau 2 dimensi tergantung kebuuthan
+         */
+        setDataMenuToEdit(response,responseMenu,model,webRequest);
         return ConstantPage.AKSES_EDIT_PAGE;
     }
 
@@ -198,12 +195,14 @@ public class AksesController {
             @PathVariable(value = "id") Long id,
             WebRequest webRequest){
 
-        ValAksesDTO valAksesDTO = convertToValAksesDTO(selectAksesDTO);
+        selectAksesDTO.setId(id);
         if(bindingResult.hasErrors()){
-            model.addAttribute("data",valAksesDTO);
+            model.addAttribute("data",selectAksesDTO);
+            setDataTempEdit(model,webRequest);
             return ConstantPage.AKSES_EDIT_PAGE;
         }
 
+        ValAksesDTO valAksesDTO = convertToValAksesDTO(selectAksesDTO);
         ResponseEntity<Object> response = null;
         String jwt = GlobalFunction.tokenCheck(model, webRequest);
         if(jwt.equals(ConstantPage.LOGIN_PAGE)){
@@ -214,6 +213,7 @@ public class AksesController {
             response = aksesService.edit(jwt,id,valAksesDTO);
         }catch (Exception e){
             model.addAttribute("data",selectAksesDTO);
+            setDataTempEdit(model,webRequest);
             return ConstantPage.AKSES_EDIT_PAGE;
         }
         return ConstantPage.SUCCESS_MESSAGE;
@@ -238,6 +238,92 @@ public class AksesController {
         }
 
         return "redirect:/akses";
+    }
+
+    /** fungsi untuk mencocokkan data menu dengan data yang sudah ada di table di database */
+    private void setDataMenuToEdit(ResponseEntity<Object> response,ResponseEntity<Object> responseMenu, Model model,WebRequest webRequest){
+        Map<String,Object> map = (Map<String, Object>) response.getBody();
+        Map<String,Object> mapMenu = (Map<String, Object>) responseMenu.getBody();
+
+        Map<String,Object> mapData = (Map<String, Object>) map.get("data");
+
+        List<Map<String,Object>> ltMenuAkses = (List<Map<String, Object>>) mapData.get("ltMenu");
+        List<Map<String,Object>> listOfMenu = (List<Map<String, Object>>) mapMenu.get("data");
+        List<SelectMenuDTO> listAllMenu = getAllMenu(listOfMenu);//harus di serialize di thymeleaf
+        int listAllMenuSize = listAllMenu.size();
+        int listMenuAksesSize = ltMenuAkses.size();
+        List<SelectMenuDTO> selectedMenuDTO = new ArrayList<>();
+        Long data1[] = new Long[listAllMenuSize];//menampung data id dari all menu
+        String data2[] = new String[listAllMenuSize];//menampung data nama dari all menu
+        Long data3[] = new Long[listMenuAksesSize];//menampung data id dari menu akses
+        String data4[] = new String[listMenuAksesSize];//menampung data nama dari menu akses
+
+        int i=0;
+        int j=0;
+        for (SelectMenuDTO menu : listAllMenu) {
+            data1[i]=menu.getId();
+            data2[i]=menu.getNama();
+            for(Map<String,Object> m:ltMenuAkses){
+                if(menu.getId()==Long.parseLong(m.get("id").toString())){
+                    data3[j]=menu.getId();
+                    data4[j]=menu.getNama();
+                    j++;
+                    selectedMenuDTO.add(menu);
+                    break;
+                }
+            }
+            i++;
+        }
+        Set<Long> menuSelected = selectedMenuDTO.stream().map(SelectMenuDTO::getId).collect(Collectors.toSet());
+        model.addAttribute("data",new ObjectMapper().convertValue(mapData,RespAksesDTO.class));
+        model.addAttribute("listMenu",listAllMenu);
+        model.addAttribute("menuSelected", menuSelected);
+        webRequest.setAttribute("data1",data1,1);
+        webRequest.setAttribute("data2",data2,1);
+        webRequest.setAttribute("data3",data3,1);
+        webRequest.setAttribute("data4",data4,1);
+    }
+
+    /** fungsi untuk mengambil data web yang sudah di set sebelumnya di function setDataMenuToEdit , agar tidak menghubungi server lagi meminta data yang sama */
+    private void setDataTempEdit(Model model , WebRequest webRequest){
+        Long data1[] = (Long[]) webRequest.getAttribute("data1",1);//menampung data id dari all menu
+        String data2[] = (String[]) webRequest.getAttribute("data2",1);//menampung data nama dari all menu
+        Long data3[] = (Long[]) webRequest.getAttribute("data3",1);//menampung data id dari menu akses
+        String data4[] = (String[]) webRequest.getAttribute("data4",1);//menampung data nama dari menu akses
+        List<SelectMenuDTO> selectedMenuDTO = new ArrayList<>();
+        List<SelectMenuDTO> listAllMenu = new ArrayList<>();
+        SelectMenuDTO selectMenuDTO = null;
+        for(int i=0;i<data1.length;i++){
+            selectMenuDTO = new SelectMenuDTO();
+            selectMenuDTO.setId(data1[i]);
+            selectMenuDTO.setNama(data2[i]);
+            listAllMenu.add(selectMenuDTO);
+        }
+
+        for(int i=0;i<data3.length;i++){
+            selectMenuDTO = new SelectMenuDTO();
+            selectMenuDTO.setId(data3[i]);
+            selectMenuDTO.setNama(data4[i]);
+            selectedMenuDTO.add(selectMenuDTO);
+        }
+        Set<Long> menuSelected = selectedMenuDTO.stream().map(SelectMenuDTO::getId).collect(Collectors.toSet());
+        model.addAttribute("listMenu",listAllMenu);
+        model.addAttribute("menuSelected", menuSelected);
+    }
+
+    /** fungsi untuk mengambil data web yang sudah di set sebelumnya di function openModalAdd , agar tidak menghubungi server lagi meminta data menu yang sama */
+    private void setDataTempAdd(Model model , WebRequest webRequest){
+        Long data1[] = (Long[]) webRequest.getAttribute("data1",1);//menampung data id dari all menu
+        String data2[] = (String[]) webRequest.getAttribute("data2",1);//menampung data nama dari all menu
+        List<SelectMenuDTO> listAllMenu = new ArrayList<>();
+        SelectMenuDTO selectMenuDTO = null;
+        for(int i=0;i<data1.length;i++){
+            selectMenuDTO = new SelectMenuDTO();
+            selectMenuDTO.setId(data1[i]);
+            selectMenuDTO.setNama(data2[i]);
+            listAllMenu.add(selectMenuDTO);
+        }
+        model.addAttribute("x",listAllMenu);
     }
 
     // localhost:8093/akses/1

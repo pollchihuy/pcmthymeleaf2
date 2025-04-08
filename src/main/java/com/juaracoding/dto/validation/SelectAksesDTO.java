@@ -8,6 +8,8 @@ import java.util.List;
 
 public class SelectAksesDTO {
 
+    private Long id;
+
     @Pattern(regexp = "^[\\w\\s]{5,50}$",message = "Alfanumerik dengan spasi min 5 maks 50 karakter")
     private String nama;
 
@@ -15,6 +17,14 @@ public class SelectAksesDTO {
     private String deskripsi;
 
     private List<String> ltMenu;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNama() {
         return nama;
